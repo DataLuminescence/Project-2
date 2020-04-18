@@ -1,102 +1,140 @@
 package sorting;
 
-public class LinkedlistIS  
-{ 
-    Node head; 
-    Node sorted; 
-  
-    class Node  
-    { 
-        int val; 
-        Node next; 
-  
-        public Node(int val)  
-        { 
-            this.val = val; 
-        } 
-    } 
-  
-    void push(int val)  
-    { 
-        /* allocate node */
-        Node newnode = new Node(val); 
-        /* link the old list off the new node */
-        newnode.next = head; 
-        /* move the head to point to the new node */
-        head = newnode; 
-    } 
-  
-    // function to sort a singly linked list using insertion sort 
-    void insertionSort(Node headref)  
-    { 
-        // Initialize sorted linked list 
-        sorted = null; 
-        Node current = headref; 
-        // Traverse the given linked list and insert every 
-        // node to sorted 
-        while (current != null)  
-        { 
-            // Store next for next iteration 
-            Node next = current.next; 
-            // insert current in sorted linked list 
-            sortedInsert(current); 
-            // Update current 
-            current = next; 
-        } 
-        // Update head_ref to point to sorted linked list 
-        head = sorted; 
-    } 
-  
-    /* 
-     * function to insert a new_node in a list. Note that  
-     * this function expects a pointer to head_ref as this 
-     * can modify the head of the input linked list  
-     * (similar to push()) 
-     */
-    void sortedInsert(Node newnode)  
-    { 
-        /* Special case for the head end */
-        if (sorted == null || sorted.val >= newnode.val)  
-        { 
-            newnode.next = sorted; 
-            sorted = newnode; 
-        } 
-        else 
-        { 
-            Node current = sorted; 
-            /* Locate the node before the point of insertion */
-            while (current.next != null && current.next.val < newnode.val)  
-            { 
-                current = current.next; 
-            } 
-            newnode.next = current.next; 
-            current.next = newnode; 
-        } 
-    } 
-  
-    /* Function to print linked list */
-    void printlist(Node head)  
-    { 
-        while (head != null)  
-        { 
-            System.out.print(head.val + " "); 
-            head = head.next; 
-        } 
-    } 
-      
-    // Driver program to test above functions 
-    public static void main(String[] args)  
-    { 
-        LinkedlistIS list = new LinkedlistIS(); 
-        list.push(5); 
-        list.push(20); 
-        list.push(4); 
-        list.push(3); 
-        list.push(30); 
-        System.out.println("Linked List before Sorting.."); 
-        list.printlist(list.head); 
-        list.insertionSort(list.head); 
-        System.out.println("\nLinkedList After sorting"); 
-        list.printlist(list.head); 
-    } 
-} 
+import java.util.LinkedList;
+
+import sorting.LinkedlistIS.Node;
+
+
+public class SortingTest<E extends Comparable<? super E>> implements Sorting<E>
+{
+
+	public class LinkedListsTest{
+		
+		public Node<E> head; //Designed to store the location of the head of the linked list
+		public Node<E> sorted; //Designed to store the location of the head of the sorted part of the linked list
+	
+	    class Node<T extends Comparable<? super T>>  
+	    { 
+	        T val; //Data stored in linked list element
+	        Node<T> next; //Location of the next node in linked list
+	  
+	        public Node(T val) //Used to set the data of node when the user specifies integers 
+	        { 
+	            this.val = val; 
+	        } 
+	    } 
+	    
+	    void push(E val)  
+	    { 
+	        //Declare new node
+	        Node<E> newnode = new Node<E>(val);
+	        
+	        //Move the old head node to the next node to the right of the new head node
+	        newnode.next = head;
+	        
+	        //Add new node to start of linked list and make it the new head node
+	        head = newnode; 
+	    }
+	    
+	    //Function to sort a singly linked list using insertion sort. We start at a 
+	    //specified reference point headref
+	    void insertionSort(Node<E> headref) 
+	    {
+	    	//Set sorted node to null to make sure we can start a fresh sort
+	        sorted = null;
+	        
+	        //Create new node to insert into sorted linked list???
+	        Node<E> current = headref;
+	        
+	        //Traverse the unsorted linked list and insert every node to a sorted linked list
+	        while (current != null) 
+	        {
+	        	//Set next node to current next for next iteration
+	            Node<E> next = current.next;
+	            
+	            //Place current node in sorted linked list
+	            sortedInsert(current);
+	            
+	            //Update the current node to the next
+	            current = next;
+	        }
+	        
+	        //Update head_ref to point to sorted linked list
+	        head = sorted;
+	    }
+	    
+	    //Function that inserts a new node for the sorted linked list. The linked list
+	    //order will change based on the value of each new node entering the list
+	    void sortedInsert(Node<E> newnode) {
+
+	    	//If the head node of the sorted linked list is null or if the node being 
+	    	//added has a smaller value than the current head node, then replace the
+	    	//head node with the new node, and set the next to the old head node
+	        if (sorted == null || newnode.val.compareTo(sorted.val) <= 0) {
+	            newnode.next = sorted;
+	            sorted = newnode;
+	        } else {
+	        	//Set current node to head of sorted linked list to provide a starting
+	        	//point to compare our newnode 
+	            Node<E> current = sorted;
+	            
+	            //While we are not at the end of the linked list and the value of the
+	            //comparison is less than 0 we continue to traverse linked list until
+	            //we locate the insertion point
+	            while (current.next != null && current.next.val.compareTo(newnode.val) < 0) {
+	                //As long as insertion point isn't located we will set current
+	            	//comparison value to the next spot in the linked list
+	            	current = current.next;
+	            }
+	            //Set the node after our newly inserted node to the next node of the current 
+	            //node. This is to the right of our insertion point
+	            newnode.next = current.next;
+	            
+	            //Set the location of the new node to the insertion point that current.next 
+	            //used to inhabit
+	            current.next = newnode;
+	        }
+	    }
+	    
+	    //Print linked list based on input
+	    void printlist(Node<E> head) {
+	        while (head != null) {
+	            System.out.print(head.val + " ");
+	            head = head.next;
+	        }
+	    } 
+	}
+	
+	public static void main(String[] args) 
+	{
+		LinkedList<Integer> list = new LinkedList<Integer>();
+        list.push(5);
+        list.push(20);
+        list.push(4);
+        list.push(3);
+        list.push(30);
+        System.out.println("Linked List before Sorting..");
+        list.printlist(list.head);
+        list.insertionSort(list.head);
+        System.out.println("\nLinkedList After sorting");
+        list.printlist(list.head);
+	}
+
+	@Override
+	public void insertionSort(LinkedList<E> list, int lowindex, int highindex, boolean reversed) 
+	{
+	
+	}
+
+	@Override
+	public void quicksort(LinkedList<E> list, int lowindex, int highindex, boolean reversed) 
+	{
+		
+	}
+
+	@Override
+	public void mergeSortLL(LinkedList<E> list, boolean reversed) 
+	{	
+		
+	}
+}
